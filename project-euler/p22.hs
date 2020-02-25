@@ -12,10 +12,10 @@ What is the total of all the name scores in the file?
 import System.IO
 import Data.List (sort)
 import Data.Char (ord,toLower)
-main = do
+res = do
     raw <- readFile  "p022_names.txt"
     let names = (parse raw)
-    print (res names)
+    print (fn names)
 
 splitAtChar :: Char -> String -> [String]
 splitAtChar _ [] = []
@@ -43,6 +43,6 @@ getAlphabeticalValue word = sum $ map fn word  where
 
 
 
-res names = sum (zipWith fn sorted [1,2..]) where
+fn names = sum (zipWith fn sorted [1,2..]) where
     sorted = sort names
     fn word pos = getAlphabeticalValue word * pos

@@ -3,7 +3,7 @@ bigNDigits = "371072875339021027987979982208375902465101357402504637693767749000
 
 splitLength 0 _ = []
 splitLength _ [] = []
-splitLength l xs = [(take l xs)]++(splitLength l (drop l xs))
+splitLength l xs = (take l xs):(splitLength l (drop l xs))
 
 strToInt str = helper str (length str -1) where 
     helper [] _ = 0 :: Integer

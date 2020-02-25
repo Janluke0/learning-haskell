@@ -21,8 +21,8 @@ def do_test(sol_n,solutions = solutions,timeout=None):
         cmd = ["ghci","p{0:02d}.hs".format(sol_n),"-e","res"]
         out = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=timeout)\
                 .stdout.decode('utf-8').strip()
-
-        return time.time() - t, out==solutions[sol_n]
+        #print(out,solutions[sol_n])
+        return time.time() - t, out.strip()==solutions[sol_n].strip()
     
     return None,None
 

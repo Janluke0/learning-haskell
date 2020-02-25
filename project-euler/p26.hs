@@ -13,4 +13,6 @@ findRecurringCycle (c:cs) = helper (c:[]) cs where
     helper cycle rem =
         if rem `startsWith` cycle  then
             helper cycle $ drop (length cycle) rem
-        else helper rem 
+        else False
+
+res = False
