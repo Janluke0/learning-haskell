@@ -15,7 +15,7 @@ data BFTree = BFNode {
 -- not used, should it?
 asList :: BFTree -> [(BFTree,BFTree)]
 asList Empty = []
-asList tree  = [(tree, body tree)] ++ (asList $ next tree)
+asList tree  = (tree, body tree) : asList (next tree)
 
 data BFVM = BFVM {
     iHead :: BFTree,
