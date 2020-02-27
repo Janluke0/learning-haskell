@@ -11,4 +11,4 @@ strToInt str = helper str (length str -1) where
         ((toInteger $ digitToInt c)*10^power )+(helper cs (power-1)) :: Integer
 
 
-res = take 10 $ show.sum $ map  strToInt (splitLength 50 bigNDigits)
+res = strToInt $ take 10 $ show.sum $ map  strToInt (splitLength 50 bigNDigits)
