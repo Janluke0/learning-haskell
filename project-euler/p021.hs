@@ -7,9 +7,6 @@ The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
 
 Evaluate the sum of all the amicable numbers under 10000.
 -}
-intSqrt :: Integer -> Integer
-intSqrt = truncate.sqrt.fromInteger
-
 getProperDivisors :: Integer -> [Integer] 
 getProperDivisors n = filter (\m-> mod n m ==0) [q,q-1..1] where
     q =  div n 2
@@ -18,7 +15,10 @@ d :: Integer -> Integer
 d = sum.getProperDivisors 
 
 isAmicable :: Integer -> Bool
-isAmicable n = n == (d.d) n 
+isAmicable n = do 
+    let a = d n
+    let b = d a
+    a /= b && n == b
 
 
 amicables = filter isAmicable  [0..10000]
