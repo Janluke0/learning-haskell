@@ -1,4 +1,3 @@
-
 import Data.Char (ord,chr)
 import Data.Word 
 import System.Environment
@@ -27,8 +26,8 @@ data BFVM = BFVM {
 
 main = do
     args <- getArgs
-    if length args < 1 then
-        putStrLn $ "./bf source.b"
+    if null args then
+        putStrLn  "./bf source.b"
     else do
         code <- readFile $ head args
         execBFVM $ buildVM code
@@ -41,7 +40,7 @@ execBFVM vm
             c  <- getChar
             execBFVM $ alterMem vm{state=Run} (\_-> fromIntegral $ ord c)
         | state vm == Output = do
-            putChar.chr $ fromIntegral $ (mem vm)!!(mPtr vm)
+            putChar.chr.fromIntegral $ mem vm !! mPtr vm
             hFlush stdout
             execBFVM vm{state=Run}
         | state vm == End = return ()
@@ -52,7 +51,7 @@ runFrame :: BFVM -> BFVM
 runFrame vm 
     |iHead vm == Empty = do 
         let s = stack vm
-        if length s > 0 then popStack vm --loop end
+        if not $ null s then popStack vm --loop end
         else vm{state = End} -- Instructions end
     |otherwise = goNext ({-((trace "\n")(traceShow $ bfType $ iHead vm))(-}
     do
@@ -60,10 +59,10 @@ runFrame vm
         let bi = body i
         case bfType i of
             Loop ->
-                if (mem vm)!!(mPtr vm) == 0 || bi == Empty then vm
+                if mem vm !! mPtr vm  == 0 || bi == Empty then vm
                 else (pushStack vm) {iHead= BFNode Nop bi Empty} --eeehhhmmmmm...
             Increment -> alterMem vm (1+)
-            Decrement -> alterMem vm ((-1)+)
+            Decrement -> alterMem vm (255+)
             ShiftL    -> shiftMem vm 1
             ShiftR    -> shiftMem vm (-1)
             Write     -> vm{ state = Output }
@@ -73,7 +72,7 @@ runFrame vm
 goNext :: BFVM -> BFVM
 goNext vm = vm {iHead=next $ iHead vm}
 pushStack :: BFVM -> BFVM
-pushStack vm = vm{stack = (stack vm)++[iHead vm]}
+pushStack vm = vm{stack = stack vm ++[iHead vm]}
 popStack :: BFVM -> BFVM
 popStack vm = do 
     let stackHead = last (stack vm) 
@@ -82,19 +81,19 @@ popStack vm = do
 
 alterMem :: BFVM -> (BFWord->BFWord) -> BFVM
 alterMem vm fn = vm { 
-    mem = (take (mPtr vm) (mem vm)) ++ [fn $ fromIntegral $ ((mem vm)!!(mPtr vm)) ] ++ drop ( 1 + (mPtr vm)) (mem vm)
+    mem = take (mPtr vm) (mem vm) ++ [ fn.fromIntegral $ mem vm !! mPtr vm ] ++ drop ( 1 + mPtr vm) (mem vm)
 }
 shiftMem :: BFVM -> Int -> BFVM
 shiftMem vm val
-    | mPtr vm ==  (length (mem vm)) - 1 && val>0 = 
-        shiftMem vm{mem = (mem vm)++(replicate 10 0)} val
+    | mPtr vm ==  length (mem vm) - 1 && val>0 = 
+        shiftMem vm{mem = mem vm ++ replicate 10 0} val
     | mPtr vm == 0 && val<0 = 
-        vm{mem = (replicate 10 0)++(mem vm), mPtr = 9}
-    | otherwise = vm{mPtr = val + (mPtr vm)}
+        vm{mem = replicate 10 0 ++ mem vm, mPtr = 9}
+    | otherwise = vm{mPtr = val + mPtr vm}
 -- for debug
-runWhileIO :: BFVM -> BFVM
-runWhileIO vm 
-    | state vm == Run = runWhileIO $ runFrame vm
+runWhileNotIO :: BFVM -> BFVM
+runWhileNotIO vm 
+    | state vm == Run = runWhileNotIO $ runFrame vm
     | otherwise = vm
 runNFrame 0 vm = vm
 runNFrame n vm = runNFrame (n-1) (runFrame vm)
@@ -103,21 +102,21 @@ runNFrame n vm = runNFrame (n-1) (runFrame vm)
 bfParse :: String -> BFTree
 bfParse [] = Empty
 bfParse (i:str)
-    |elem i "+-><,." = BFNode (charToIns i) (bfParse str) Empty
+    |i `elem` "+-><,." = BFNode (charToIns i) (bfParse str) Empty
     |i == '[' = do
         let (strBody,_:strNexts) =  splitAtLoopEnd str 
         BFNode Loop (bfParse strNexts) (bfParse strBody)
     |otherwise = bfParse str
 
 splitAtLoopEnd code = splitAt (getCorrespodentParethesisIndex code) code
-mapPar code = filter ((1==).abs.fst) $ zip parValues [0,1..] 
-                where parValues =  map ((92-) . fromIntegral . ord) code
 
      
 getCorrespodentParethesisIndex code = 
-    snd.head.(filter ((0==).fst)) $ scanl acc (1,0)  $ mapPar code
+    snd.head.filter ((0==).fst) $ scanl acc (1,0)  $ mapPar code
     where 
-        acc = (\(a,_) (b,c) -> (a+b,c) )
+        acc (a,_) (b,c) = (a+b,c)
+        mapPar code = filter ((1==).abs.fst) $ zip parValues [0,1..] 
+                where parValues =  map ((92-) . fromIntegral . ord) code -- '['=91 ']'=93
 
 charToIns c = case c of 
     '+'-> Increment
