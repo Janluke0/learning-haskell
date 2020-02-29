@@ -8,8 +8,10 @@ By considering the terms in the Fibonacci sequence whose values do not exceed fo
 find the sum of the even-valued terms.
 -}
 
-fib n
-    |n <= 1 = 1
-    |otherwise = fib (n-1) + fib (n-2) 
+mfib = (map fib [0..]!!) where
+    fib n
+        | n <= 0 = 0
+        | n == 1 = 1
+        | otherwise = mfib (n-1) + mfib (n-2)
 
-res = sum $ takeWhile (<=4000000) $ filter even  $ map fib [0..]
+res = sum $ takeWhile (<=4000000) $ filter even  $ map mfib [0..]

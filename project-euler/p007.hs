@@ -4,9 +4,15 @@ By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that 
 What is the 10 001st prime number?
 -}
 
-isPrime n = null (take 1 (getFactors n))
-getFactors n = filter (\m-> mod n m == 0) [n-1,n-2..2]
+intSqrt = round.sqrt.fromIntegral
 
-getPrime n = last $ take n (filter isPrime [2,3..])
+
+isPrime = null.getFactors 
+
+getFactors :: Integer -> [Integer] 
+getFactors n = filter (\m-> mod n m == 0) [o,o-1..2]
+    where o = intSqrt n 
+
+getPrime =  ( filter isPrime [2,3..] !! )
 
 res = getPrime 10001
