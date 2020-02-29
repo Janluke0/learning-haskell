@@ -1,4 +1,4 @@
-#ghci pXX.hs -e 'res'
+#!/usr/bin/env python3
 import os
 import time
 import subprocess 
