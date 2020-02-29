@@ -13,6 +13,6 @@ getFactors :: Integer -> [Integer]
 getFactors n = filter (\m-> mod n m == 0) [o,o-1..2]
     where o = intSqrt n 
 
-getPrime =  ( filter isPrime [2,3..] !! )
+getPrime =  ( filter isPrime [1,2..] !! )
 
 res = getPrime 10001
