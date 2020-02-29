@@ -9,13 +9,11 @@ Hence the difference between the sum of the squares of the first ten natural num
 
 Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
 -}
-main = do
-    print res
-    
-sumOfSquares n = sum [x^2| x<-[1,2..n]]
-squareOfSum n = (sum [1,2..n])^2
 
-p06 n = (squareOfSum n) - (sumOfSquares n) 
+sumOfSquares n = sum [x^2| x<-[1,2..n]]
+squareOfSum n = sum [1,2..n] ^2
+
+p06 n = squareOfSum n - sumOfSquares n 
 
 
 res = p06 100
