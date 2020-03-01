@@ -36,16 +36,15 @@ maxOfMatrix m = maximum $ [(product.getDiagonal) m ]
 
 --given a MxM find all the NxN submatrix
 getAllSubmatrices :: Num a => Matrix a -> Int -> [ Matrix a ]
-getAllSubmatrices m n =  filter (not.null.(!!0)) $ filter (not.null) --should be not empty matrix :/
-    $ map submatrix $  foldl (\a n -> a++(zip [n..] allIndex)) [] allIndex
+getAllSubmatrices m n = map submatrix $ [(x,y)| x<-allIndex, y<-allIndex]
     where 
-        allIndex = [0,1..length m-n-1]
+        allIndex = [0,1..length m -(n -1)]
         submatrix = (getSubmatrix m n )
 
 getSubmatrix :: Matrix a -> Int  -> (Int,Int) ->  Matrix a 
 getSubmatrix m n (r,c) 
     | length m - n < r || length m -n < c = []
-    | otherwise =  map ( (take n).(drop c).(getRow m) ) [r,r+1..r+n-1] 
+    | otherwise =  map ( (take n).(drop c). getRow m ) [r,r+1..r+n-1] 
 --
 res = maximum $ map maxOfMatrix $ getAllSubmatrices bigM  4
 
@@ -68,8 +67,8 @@ getColumn m n = helper m n 0 where
         |length m == z = []
         |otherwise = ((m!!z)!!n): helper m n (z+1) 
 
-prettyPrint m = foldl (\a r -> a++(printRow r)++"\n") "" [0,1..length m -1] where
+prettyPrint m = foldl (\a r -> a++ printRow r ++ "\n" ) [] [0,1..length m -1] where
     printRow n = h  (getRow m n) where
         h (e:es)
             |null es = show e
-            |otherwise = (show e)++" "++(h es)
+            |otherwise = show e ++ " " ++ h es

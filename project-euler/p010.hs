@@ -3,15 +3,20 @@ The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
 
 Find the sum of all the primes below two million.
 -}
-givenN = 2000000
+givenN = 2 *1000 *1000
 
-isPrime n = null (take 1 (getFactors n))
+intSqrt = round.sqrt.fromIntegral
 
+
+isPrime = null.getFactors 
 
 getFactors :: Integer -> [Integer] 
-getFactors n = filter (\m-> mod n m ==0) [n-1,n-2..2]
+getFactors n = filter (\m-> mod n m == 0) [o,o-1..2]
+    where o = intSqrt n 
 
 
-sumPrimesBelow n = sum [x| x <-[2,3..n] , isPrime x ]
+getPrimesBelow n = filter isPrime [2,3..n-1]
 
-res =  sum $ takeWhile (<givenN)  [x| x <- [2,3..] , isPrime x ]
+sumPrimesBelow = sum.getPrimesBelow
+
+res =  sumPrimesBelow givenN
