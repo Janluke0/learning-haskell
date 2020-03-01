@@ -14,12 +14,12 @@ import Data.List (sort)
 import Data.Char (ord,toLower)
 res = do
     raw <- readFile  "p022_names.txt"
-    let names = (parse raw)
-    print (fn names)
+    let names = parse raw
+    print $ fn names
 
 splitAtChar :: Char -> String -> [String]
 splitAtChar _ [] = []
-splitAtChar c str = takeWhile (/=c) str : (splitAtChar c $ safeTail (dropWhile (/=c) str))
+splitAtChar c str = takeWhile (/=c) str : splitAtChar c (safeTail (dropWhile (/=c) str))
     where
         safeTail [] = []
         safeTail xs = tail xs

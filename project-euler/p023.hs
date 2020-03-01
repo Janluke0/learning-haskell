@@ -28,22 +28,19 @@ memoized_fib = (map fib [0 ..] !!)
          fib n = memoized_fib (n-2) + memoized_fib (n-1)
 -}
 isAbundant :: Int -> Bool
-isAbundant n = ( map fn [1..] ) !! n 
+isAbundant n = ( map fn [1..] ) !! n
     where fn = (>n).sum.getProperDivisors
+    
 isDeficent :: Int -> Bool
-isDeficent n = ( map (sum.getProperDivisors) [1..] ) !! n  < n
+isDeficent n = map (sum.getProperDivisors) [1..] !! n  < n
 
 isTheSumOfTwoAbundantNums :: Int -> Bool
-isTheSumOfTwoAbundantNums n = helper (n-12)  where 
-    helper m 
+isTheSumOfTwoAbundantNums n = helper (n-12)  where
+    helper m
         | m <= 0 = False
-        | otherwise = 
-        if isAbundant m && isAbundant (n-m) then
-            True
-        else
-            helper (m-1)
-                
+        | otherwise = isAbundant m && isAbundant (n-m) || helper (m-1)
 
-getProperDivisors :: Integral a => a -> [a] 
-getProperDivisors n = filter ( (0==).(mod n) ) [q,q-1..1] where
+
+getProperDivisors :: Integral a => a -> [a]
+getProperDivisors n = filter ( (0==).mod n ) [q,q-1..1] where
     q =  div n 2

@@ -10,5 +10,8 @@ testDivisorUnder l n
     | mod n l /= 0  = False
     |otherwise = testDivisorUnder (l-1) n 
     
--- TODO: find better candidates
-res = head $ filter (testDivisorUnder 20) [20,40..]
+
+candidates n = map (*n) [1..] where base = n 
+-- use as base the product of the prime factors of all number 1..20 make sense but it's not faster
+-- TODO: find better candidates: it is slow 
+res = head $ filter (testDivisorUnder 20) $ candidates 20
